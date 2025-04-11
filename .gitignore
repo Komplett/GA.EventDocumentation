@@ -1,0 +1,14 @@
+bin/
+obj/
+/packages/
+riderModule.iml
+/_ReSharper.Caches/
+appsettings.json
+.idea/
+
+Komplett.Ga.EventDocumentation.sln.DotSettings.*
+
+/Tests/Komplett.Ga.EventDocumentation.Tests/obj
+/Tests/Komplett.Ga.EventDocumentation.Tests/bin
+
+.DS_Store
