@@ -29,4 +29,7 @@
     <ItemGroup>
         <Using Include="System.Threading.ExecutionContext" Alias="ExecutionContext"/>
     </ItemGroup>
+    <ItemGroup>
+      <Folder Include="webapp\src\components\" />
+    </ItemGroup>
 </Project>

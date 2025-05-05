@@ -14,3 +14,13 @@ export const makeJsonNice = (json: string): string => {
         return json; // Return original string if parsing fails
     }
 }
+
+export const safelyParseJson = (jsonString: string, defaultValue: any[] = []): any[] => {
+    try {
+        const parsed = JSON.parse(jsonString);
+        return Array.isArray(parsed) ? parsed : defaultValue;
+    } catch (error) {
+        console.error("Error parsing JSON:", error);
+        return defaultValue;
+    }
+};
