@@ -8,7 +8,7 @@ export const makeJsonNice = (json: string): string => {
     
     try {
         const parsed = JSON.parse(json);
-        return JSON.stringify(parsed, null, 4);
+        return JSON.stringify(parsed, null, 2);
     } catch (error) {
         console.error("Error parsing JSON:", error);
         return json; // Return original string if parsing fails
