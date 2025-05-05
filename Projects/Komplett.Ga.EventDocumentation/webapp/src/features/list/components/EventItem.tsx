@@ -6,12 +6,10 @@ import {
     Code,
     Flex,
     Group,
-    JsonInput,
     Select,
-    Stack, 
     TagsInput,
     Text,
-    TextInput,
+    Stack,
     ThemeIcon,
     Tooltip
 } from "@mantine/core";
@@ -22,6 +20,8 @@ import { updateEvent } from "../api/eventRequests.ts";
 import { Event } from "../../../types/Event.ts";
 import { makeJsonNice } from "../../../utils/formatter.ts";
 import classes from "./EventItem.module.css";
+import TextField from "../../../components/TextField";
+import JsonEditor from "../../../components/JsonEditor";
 
 interface EventItemProps {
     item: Event;
@@ -65,13 +65,15 @@ const EventItem = ({ item, refetch }: EventItemProps) => {
     };
 
     const handleEditMode = () => {
-        setEventForm({
+        const formState = {
             eventName: item.eventName,
             description: item.description || '',
             format: item.format || '{}',
             type: item.type || '',
             tags: item.tags || '[]'
-        });
+        };
+        
+        setEventForm(formState);
         setIsEditMode(true);
     };
     
@@ -164,25 +166,28 @@ const EventItem = ({ item, refetch }: EventItemProps) => {
                     data={['Clientside', 'Serverside']}
                     placeholder="Select event type"
                     value={eventForm.type}
-                    onChange={(option) => setEventFormState({type: option || ''})}
+                    onChange={(option) => {
+                        const value = option || '';
+                        setEventFormState({type: value});
+                    }}
                     radius="md"
                 />
             </div>
             
             <div>
                 <Text fw={700} size="md">Description</Text>
-                <TextInput
+                <TextField
                     placeholder="Add a description"
                     value={eventForm.description}
-                    onChange={(e) => setEventFormState({description: e.target.value})}
+                    onChange={(value) => setEventFormState({description: value})}
                     radius="md"
                 />
             </div>
             
             <div>
                 <Text fw={700} size="md">Format</Text>
-                <JsonInput
-                    validationError="Invalid JSON"
+                <JsonEditor
+                    placeholder="Format"
                     formatOnBlur
                     autosize
                     minRows={3}
