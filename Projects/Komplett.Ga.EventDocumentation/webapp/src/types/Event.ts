@@ -4,4 +4,5 @@ export interface Event {
     format: string;
     type: string;
     tags: string;
+    deprecated?: boolean;
 }

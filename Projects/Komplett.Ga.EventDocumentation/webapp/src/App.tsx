@@ -84,6 +84,7 @@ const App = () => {
                                 <Badge 
                                     key={tag}
                                     style={{ cursor: "pointer" }}
+                                    variant="light"
                                     color={tagQuery === tag ? "green" : "blue"}
                                     onClick={() => updateSelectedTag(tag)}
                                 >

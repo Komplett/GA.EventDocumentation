@@ -11,4 +11,6 @@ public class Event
     public string? Type { get; set; }
 
     public string? Tags { get; set; }
+    
+    public bool? Deprecated { get; set; }
 }

@@ -14,13 +14,14 @@ CREATE OR REPLACE TABLE `ga_event_names.event_names` (
   description STRING,
   format JSON,
   type STRING,
-  tags JSON
+  tags JSON,
+  deprecated BOOL
 );
 
 -- Add a description to the table
 ALTER TABLE `ga_event_names.event_names` 
 SET OPTIONS (
-  description = 'Google Analytics event documentation table containing event names, descriptions, formats, types, and tags'
+  description = 'Google Analytics event documentation table containing event names, descriptions, formats, types, tags, and deprecation status'
 );
 
 -- Add descriptions to the columns
@@ -39,15 +40,19 @@ ALTER COLUMN type SET OPTIONS (description = 'Indicates whether the event is cli
 ALTER TABLE `ga_event_names.event_names`
 ALTER COLUMN tags SET OPTIONS (description = 'JSON array of tags for categorizing and filtering events');
 
+ALTER TABLE `ga_event_names.event_names`
+ALTER COLUMN deprecated SET OPTIONS (description = 'Boolean flag indicating whether the event is deprecated and should no longer be used');
+
 -- Example of how to insert a sample event (commented out)
 /*
-INSERT INTO `ga_event_names.event_names` (event_name, description, format, type, tags)
+INSERT INTO `ga_event_names.event_names` (event_name, description, format, type, tags, deprecated)
 VALUES (
   'page_view',
   'Triggered when a user views a page',
   JSON '{"page_location": "string", "page_title": "string", "page_referrer": "string"}',
   'client',
-  JSON '["core", "page_tracking"]'
+  JSON '["core", "page_tracking"]',
+  FALSE
 );
 */
 

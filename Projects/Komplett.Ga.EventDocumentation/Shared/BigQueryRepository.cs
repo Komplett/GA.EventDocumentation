@@ -59,6 +59,7 @@ public class BigQueryRepository : IBigQueryRepository
                     Format = row["format"]?.ToString() ?? string.Empty,
                     Type = row["type"]?.ToString() ?? string.Empty,
                     Tags = row["tags"]?.ToString() ?? string.Empty,
+                    Deprecated = row["deprecated"] != null ? (bool?)row["deprecated"] : null
                 };
             
                 events.Add(e);
@@ -95,7 +96,8 @@ public class BigQueryRepository : IBigQueryRepository
             SET description = @description, 
                 format = PARSE_JSON(@format), 
                 type = @type, 
-                tags = PARSE_JSON(@tags)  
+                tags = PARSE_JSON(@tags),
+                deprecated = @deprecated  
             WHERE event_name = @eventName";
             
         query = string.Format(query, _projectId, _datasetId, _tableId);
@@ -106,7 +108,8 @@ public class BigQueryRepository : IBigQueryRepository
             new BigQueryParameter("description", BigQueryDbType.String, updatedEvent.Description ?? string.Empty),
             new BigQueryParameter("format", BigQueryDbType.String, updatedEvent.Format ?? string.Empty),
             new BigQueryParameter("type", BigQueryDbType.String, updatedEvent.Type ?? string.Empty),
-            new BigQueryParameter("tags", BigQueryDbType.String, updatedEvent.Tags ?? string.Empty)
+            new BigQueryParameter("tags", BigQueryDbType.String, updatedEvent.Tags ?? string.Empty),
+            new BigQueryParameter("deprecated", BigQueryDbType.Bool, updatedEvent.Deprecated ?? false)
         };
         
         try

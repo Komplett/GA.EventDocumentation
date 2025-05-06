@@ -1,6 +1,7 @@
 import React from "react";
 
 import {
+    Alert,
     Badge, 
     Button, 
     Code, 
@@ -9,7 +10,7 @@ import {
     Text, 
     Tooltip
 } from "@mantine/core";
-import { IconEdit } from "@tabler/icons-react";
+import { IconEdit, IconAlertTriangle } from "@tabler/icons-react";
 
 import { makeJsonNice, safelyParseJson } from "../../../utils/formatter.ts";
 import { Event } from "../../../types/Event.ts";
@@ -28,7 +29,8 @@ const Preview = ({ item, setEventForm, setIsEditMode}: PreviewProps) => {
             description: item.description || '',
             format: item.format || '{}',
             type: item.type || '',
-            tags: item.tags || '[]'
+            tags: item.tags || '[]',
+            deprecated: item.deprecated || false
         };
 
         setEventForm(formState);
@@ -37,6 +39,16 @@ const Preview = ({ item, setEventForm, setIsEditMode}: PreviewProps) => {
     
     return (
         <Stack gap="md">
+            {item.deprecated && (
+                <Alert 
+                    icon={<IconAlertTriangle size={16} />}
+                    color="yellow" 
+                    variant="light"
+                >
+                    This event is marked as deprecated and should not be used for new implementations.
+                </Alert>
+            )}
+            
             <Group justify="space-between">
                 <div>
                     <Text fw={700} size="md">Event name</Text>
@@ -56,7 +68,7 @@ const Preview = ({ item, setEventForm, setIsEditMode}: PreviewProps) => {
             <div>
                 <Text fw={700} size="md">Type</Text>
                 {item.type ?
-                    <Badge size="md" radius="sm">{item.type}</Badge> :
+                    <Badge size="md" variant="light">{item.type}</Badge> :
                     <Text c="dimmed" fs="italic">Undocumented</Text>
                 }
             </div>
@@ -84,7 +96,7 @@ const Preview = ({ item, setEventForm, setIsEditMode}: PreviewProps) => {
                         {safelyParseJson(item.tags)
                             .sort()
                             .map((tag: string) =>
-                                <Badge key={tag} radius="sm">{tag}</Badge>
+                                <Badge key={tag} size="md" variant="light">{tag}</Badge>
                             )}
                     </Group> :
                     <Text c="dimmed" fs="italic">No tags</Text>

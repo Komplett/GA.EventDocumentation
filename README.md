@@ -12,6 +12,7 @@ This framework provides a comprehensive solution for documenting Google Analytic
   - Description
   - JSON format structure
   - Tags for categorization
+  - Deprecation status for outdated events
 
 - **Interactive Interface**:
   - Search functionality for finding specific events
@@ -19,6 +20,7 @@ This framework provides a comprehensive solution for documenting Google Analytic
   - Overview dashboard showing documented vs. undocumented events
   - Add new tags as needed
   - Update documentation directly from the interface
+  - Mark events as deprecated with visual indicators
 
 ## Getting Started
 
@@ -54,6 +56,7 @@ This section provides step-by-step instructions to set up and run the Google Ana
        format: JSON
        type: STRING (client/server)
        tags: JSON
+       deprecated: BOOL
        ```
      - Add appropriate descriptions to the table and columns
    - After running the setup script, set up a service account with appropriate permissions to access this table

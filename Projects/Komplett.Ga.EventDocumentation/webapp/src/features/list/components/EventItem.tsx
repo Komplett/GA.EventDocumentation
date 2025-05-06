@@ -24,7 +24,8 @@ const defaultEventFormObj: Omit<Event, 'eventName'> = {
     description: '', 
     format: '{}',
     type: '',
-    tags: '[]'
+    tags: '[]',
+    deprecated: false
 };
 
 const EventItem = ({ item, refetch }: EventItemProps) => {
@@ -42,7 +43,7 @@ const EventItem = ({ item, refetch }: EventItemProps) => {
         >
             <Accordion.Control>
                 <Group>
-                    {!item.description &&
+                    {(!item.description && !item.deprecated) &&
                         <Tooltip label="Missing documentation">
                             <ThemeIcon
                                 color="red"
@@ -53,7 +54,8 @@ const EventItem = ({ item, refetch }: EventItemProps) => {
                         </Tooltip>
                     }
                     <Text fw={500}>{item.eventName}</Text>
-                    {item.type && <Badge size="sm" radius="sm">{item.type}</Badge>}
+                    {item.type && <Badge size="sm" variant="light">{item.type}</Badge>}
+                    {item.deprecated && <Badge size="sm" variant="light" color="yellow">Deprecated</Badge>}
                 </Group>
             </Accordion.Control>
             <Accordion.Panel>

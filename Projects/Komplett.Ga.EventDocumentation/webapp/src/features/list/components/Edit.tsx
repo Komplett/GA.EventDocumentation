@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
 import {
-    Button, 
-    Flex, 
+    Button,
     JsonInput, 
     Select, 
     Stack, 
     TagsInput, 
     Text, 
-    TextInput
+    TextInput,
+    Switch,
+    Group
 } from "@mantine/core";
 import { QueryObserverResult, RefetchOptions}  from "@tanstack/react-query";
 import { IconDeviceFloppy } from "@tabler/icons-react";
@@ -109,23 +110,31 @@ const Edit = ({ item, eventForm, setEventForm, setIsEditMode, refetch }: EditPro
                     radius="md"
                 />
             </div>
-
-            <Flex gap="md" justify="flex-end">
-                <Button
-                    variant="subtle"
-                    onClick={handleCancelEdit}
-                    disabled={requestLoading}
-                >
-                    Cancel
-                </Button>
-                <Button
-                    leftSection={<IconDeviceFloppy size={16}/>}
-                    onClick={handleUpdateEvent}
-                    loading={requestLoading}
-                >
-                    Save
-                </Button>
-            </Flex>
+            
+            <Group justify="space-between" align="center" mt="md">
+                <Switch
+                    label="Mark as deprecated"
+                    checked={eventForm.deprecated || false}
+                    onChange={(event) => setEventFormState({deprecated: event.currentTarget.checked})}
+                />
+                
+                <Group>
+                    <Button
+                        variant="subtle"
+                        onClick={handleCancelEdit}
+                        disabled={requestLoading}
+                    >
+                        Cancel
+                    </Button>
+                    <Button
+                        leftSection={<IconDeviceFloppy size={16}/>}
+                        onClick={handleUpdateEvent}
+                        loading={requestLoading}
+                    >
+                        Save
+                    </Button>
+                </Group>
+            </Group>
         </Stack>
     );
 }
