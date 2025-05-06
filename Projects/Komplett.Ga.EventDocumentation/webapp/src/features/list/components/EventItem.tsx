@@ -42,7 +42,7 @@ const EventItem = ({ item, refetch }: EventItemProps) => {
             value={item.eventName}
         >
             <Accordion.Control>
-                <Group>
+                <Group gap="xs">
                     {(!item.description && !item.deprecated) &&
                         <Tooltip label="Missing documentation">
                             <ThemeIcon

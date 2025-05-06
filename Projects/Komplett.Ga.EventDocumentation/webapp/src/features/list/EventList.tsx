@@ -52,15 +52,15 @@ const EventList = ({ searchQuery, tagQuery }: EventListProps) => {
 
     if (error) {
         return (
-            <Alert icon={<IconAlertCircle size={16} />} title="Error" color="red">
-                {error.message || 'Failed to load events'}
+            <Alert icon={<IconAlertCircle size={16} />} color="red">
+                {error.message || 'Error: Failed to load events'}
             </Alert>
         );
     }
 
     if (!data) {
         return (
-            <Alert icon={<IconAlertCircle size={16} />} title="No data" color="gray">
+            <Alert icon={<IconAlertCircle size={16} />} color="gray">
                 No events found
             </Alert>
         );
@@ -68,7 +68,7 @@ const EventList = ({ searchQuery, tagQuery }: EventListProps) => {
 
     if (filteredEvents.length === 0) {
         return (
-            <Alert icon={<IconAlertCircle size={16} />} title="No matches" color="blue">
+            <Alert icon={<IconAlertCircle size={16} />} color="blue">
                 No events match your search criteria
             </Alert>
         );

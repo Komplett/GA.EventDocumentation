@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { IconSearch } from "@tabler/icons-react";
-import { Badge, Container, Group, Loader, Stack, Text, TextInput } from "@mantine/core";
+import { Badge, Container, Flex, Group, Loader, Stack, Text, TextInput } from "@mantine/core";
 import { useQuery } from "@tanstack/react-query";
 
 import EventSummary from "./features/summary/EventSummary.tsx";
@@ -69,17 +69,17 @@ const App = () => {
         <Container size="md">
             <Stack gap="xl">
                 <EventSummary />
-                <TextInput
-                    value={searchQuery}
-                    onChange={updateSearchQuery}
-                    placeholder="Search for event name..." 
-                    rightSection={<IconSearch size={16} />} 
-                    aria-label="Search for events"
-                />
-                {tags.length > 0 && (
-                    <div>
-                        <Text fw={500} mb="xs">Filter by tag:</Text>
-                        <Group gap={8}>
+                <Group justify="space-between">
+                    <TextInput
+                        value={searchQuery}
+                        onChange={updateSearchQuery}
+                        placeholder="Search for event name..." 
+                        rightSection={<IconSearch size={16} />}
+                        style={{ minWidth: 300}}
+                        aria-label="Search for events"
+                    />
+                    {tags.length > 0 && (
+                        <Flex gap={10} align="center">
                             {tags.map((tag) => (
                                 <Badge 
                                     key={tag}
@@ -91,9 +91,9 @@ const App = () => {
                                     {tag}
                                 </Badge>
                             ))}
-                        </Group>
-                    </div>
-                )}
+                        </Flex>
+                    )}
+                </Group>
                 <EventList searchQuery={searchQuery} tagQuery={tagQuery} />
             </Stack>
         </Container>
