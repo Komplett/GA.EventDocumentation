@@ -97,7 +97,7 @@ public class BigQueryRepository : IBigQueryRepository
                 format = PARSE_JSON(@format), 
                 type = @type, 
                 tags = PARSE_JSON(@tags),
-                deprecated = @deprecated  
+                deprecated = COALESCE(@deprecated, deprecated)  
             WHERE event_name = @eventName";
             
         query = string.Format(query, _projectId, _datasetId, _tableId);
