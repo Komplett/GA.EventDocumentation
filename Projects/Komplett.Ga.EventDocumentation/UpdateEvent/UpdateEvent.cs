@@ -3,8 +3,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Threading.Tasks;
 
 namespace Komplett.Ga.EventDocumentation.UpdateEvent;
 
@@ -26,31 +24,29 @@ public class UpdateEvent
     {
         try
         {
-            Event updatedEvent;
-            
             try
             {
-                updatedEvent = await req.ReadFromJsonAsync<Event>();
+                var updatedEvent = await req.ReadFromJsonAsync<Event>();
+
+                if (updatedEvent == null)
+                {
+                    _logger.LogWarning("Invalid request body received");
+                    return new BadRequestObjectResult("Please pass a valid event in the request body");
+                }
+
+                if (string.IsNullOrEmpty(updatedEvent.EventName))
+                {
+                    _logger.LogWarning("Request missing required EventName property");
+                    return new BadRequestObjectResult("EventName is required");
+                }
+
+                await _repository.UpdateEventAsync(updatedEvent);
             }
             catch (System.Text.Json.JsonException ex)
             {
                 _logger.LogWarning(ex, "Invalid JSON in request body");
                 return new BadRequestObjectResult("Invalid JSON format in request body");
             }
-
-            if (updatedEvent == null)
-            {
-                _logger.LogWarning("Invalid request body received");
-                return new BadRequestObjectResult("Please pass a valid event in the request body");
-            }
-            
-            if (string.IsNullOrEmpty(updatedEvent.EventName))
-            {
-                _logger.LogWarning("Request missing required EventName property");
-                return new BadRequestObjectResult("EventName is required");
-            }
-            
-            await _repository.UpdateEventAsync(updatedEvent);
             
             return new OkResult();
         }

@@ -10,6 +10,7 @@ public class BigQueryRepositoryTests
 {
     private readonly Mock<IConfiguration> _mockConfiguration;
     private readonly Mock<ILogger<BigQueryRepository>> _mockLogger;
+    private static readonly string TestServiceAccountJson = "{\"type\":\"service_account\",\"project_id\":\"test-project\",\"private_key_id\":\"test-key-id\",\"private_key\":\"test-private-key\",\"client_email\":\"test@example.com\",\"client_id\":\"test-client-id\",\"auth_uri\":\"https://accounts.google.com/o/oauth2/auth\",\"token_uri\":\"https://oauth2.googleapis.com/token\",\"auth_provider_x509_cert_url\":\"https://www.googleapis.com/oauth2/v1/certs\",\"client_x509_cert_url\":\"https://www.googleapis.com/robot/v1/metadata/x509/test%40example.com\"}";
 
     public BigQueryRepositoryTests()
     {
@@ -17,7 +18,7 @@ public class BigQueryRepositoryTests
         _mockLogger = new Mock<ILogger<BigQueryRepository>>();
         
         // Setup configuration with test values
-        _mockConfiguration.Setup(c => c["GoogleServiceAccount"]).Returns("{\"type\":\"service_account\",\"project_id\":\"test-project\",\"private_key_id\":\"test-key-id\",\"private_key\":\"test-private-key\",\"client_email\":\"test@example.com\",\"client_id\":\"test-client-id\",\"auth_uri\":\"https://accounts.google.com/o/oauth2/auth\",\"token_uri\":\"https://oauth2.googleapis.com/token\",\"auth_provider_x509_cert_url\":\"https://www.googleapis.com/oauth2/v1/certs\",\"client_x509_cert_url\":\"https://www.googleapis.com/robot/v1/metadata/x509/test%40example.com\"}");
+        _mockConfiguration.Setup(c => c["GoogleServiceAccount"]).Returns(TestServiceAccountJson);
         _mockConfiguration.Setup(c => c["BigQuery:ProjectId"]).Returns("test-project");
         _mockConfiguration.Setup(c => c["BigQuery:DatasetId"]).Returns("test-dataset");
         _mockConfiguration.Setup(c => c["BigQuery:TableId"]).Returns("test-table");
@@ -27,7 +28,7 @@ public class BigQueryRepositoryTests
     public void Constructor_ThrowsException_WhenServiceAccountIsMissing()
     {
         // Arrange
-        _mockConfiguration.Setup(c => c["GoogleServiceAccount"]).Returns((string)null);
+        _mockConfiguration.Setup(c => c["GoogleServiceAccount"]).Returns((string?)null);
 
         // Act & Assert
         var exception = Assert.Throws<InvalidOperationException>(() => 
@@ -43,10 +44,10 @@ public class BigQueryRepositoryTests
     {
         // Arrange
         var mockConfig = new Mock<IConfiguration>();
-        mockConfig.Setup(c => c["GoogleServiceAccount"]).Returns("{\"type\":\"service_account\",\"project_id\":\"test-project\",\"private_key_id\":\"test-key-id\",\"private_key\":\"test-private-key\",\"client_email\":\"test@example.com\",\"client_id\":\"test-client-id\",\"auth_uri\":\"https://accounts.google.com/o/oauth2/auth\",\"token_uri\":\"https://oauth2.googleapis.com/token\",\"auth_provider_x509_cert_url\":\"https://www.googleapis.com/oauth2/v1/certs\",\"client_x509_cert_url\":\"https://www.googleapis.com/robot/v1/metadata/x509/test%40example.com\"}");
-        mockConfig.Setup(c => c["BigQuery:ProjectId"]).Returns((string)null);
-        mockConfig.Setup(c => c["BigQuery:DatasetId"]).Returns((string)null);
-        mockConfig.Setup(c => c["BigQuery:TableId"]).Returns((string)null);
+        mockConfig.Setup(c => c["GoogleServiceAccount"]).Returns(TestServiceAccountJson);
+        mockConfig.Setup(c => c["BigQuery:ProjectId"]).Returns((string?)null);
+        mockConfig.Setup(c => c["BigQuery:DatasetId"]).Returns((string?)null);
+        mockConfig.Setup(c => c["BigQuery:TableId"]).Returns((string?)null);
 
         // Note: This test is limited because we can't easily verify private fields without reflection
         // In a real scenario, we might use a test-specific constructor or property to verify these values
@@ -61,12 +62,12 @@ public class BigQueryRepositoryTests
     {
         // Arrange - Use interface for testing validation logic
         var mockRepository = new Mock<IBigQueryRepository>();
-        mockRepository.Setup(r => r.UpdateEventAsync(null))
+        mockRepository.Setup(r => r.UpdateEventAsync(null!))
             .ThrowsAsync(new ArgumentNullException("updatedEvent"));
 
         // Act & Assert
         await Assert.ThrowsAsync<ArgumentNullException>(() => 
-            mockRepository.Object.UpdateEventAsync(null));
+            mockRepository.Object.UpdateEventAsync(null!));
     }
 
     [Fact]

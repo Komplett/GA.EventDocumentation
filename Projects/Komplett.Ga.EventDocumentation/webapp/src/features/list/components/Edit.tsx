@@ -105,7 +105,7 @@ const Edit = ({ item, eventForm, setEventForm, setIsEditMode, refetch }: EditPro
                 <Text fw={700} size="md">Tags</Text>
                 <TagsInput
                     placeholder="Enter tag and press Enter"
-                    value={safelyParseJson(eventForm.tags)}
+                    value={safelyParseJson<string>(eventForm.tags)}
                     onChange={updateTags}
                     radius="md"
                 />

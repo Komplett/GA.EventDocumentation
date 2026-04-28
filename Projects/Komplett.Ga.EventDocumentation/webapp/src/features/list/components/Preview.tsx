@@ -22,6 +22,7 @@ interface PreviewProps {
 }
 
 const Preview = ({ item, setEventForm, setIsEditMode}: PreviewProps) => {
+    const tags = safelyParseJson<string>(item.tags);
 
     const handleEditMode = () => {
         const formState = {
@@ -91,11 +92,11 @@ const Preview = ({ item, setEventForm, setIsEditMode}: PreviewProps) => {
 
             <div>
                 <Text fw={700} size="md">Tags</Text>
-                {item.tags && safelyParseJson(item.tags).length > 0 ?
+                {tags.length > 0 ?
                     <Group gap={8}>
-                        {safelyParseJson(item.tags)
+                        {tags
                             .sort()
-                            .map((tag: string) =>
+                            .map((tag) =>
                                 <Badge key={tag} size="md" variant="light">{tag}</Badge>
                             )}
                     </Group> :

@@ -141,7 +141,7 @@ public class UpdateEventTests
         var json = JsonSerializer.Serialize(testEvent);
         var httpContext = new DefaultHttpContext();
         httpContext.Request.Body = new MemoryStream(Encoding.UTF8.GetBytes(json));
-        httpContext.Request.Headers.Add("Content-Type", "application/json");
+        httpContext.Request.Headers["Content-Type"] = "application/json";
         return httpContext.Request;
     }
 }

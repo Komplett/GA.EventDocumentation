@@ -7,12 +7,13 @@ import EventSummary from "./features/summary/EventSummary.tsx";
 import EventList from "./features/list/EventList.tsx";
 import { getEvents } from "./features/list/api/eventRequests.ts";
 import { Event } from "./types/Event.ts";
+import { safelyParseJson } from "./utils/formatter.ts";
 
 const App = () => {
     const [searchQuery, setSearchQuery] = useState("");
     const [tagQuery, setTagQuery] = useState("");
 
-    const { data, error, isLoading } = useQuery<Event[]>({
+    const { data, error, isLoading, refetch } = useQuery<Event[]>({
         queryKey: ["getEvents"],
         queryFn: getEvents,
         staleTime: 5 * 60 * 1000, // 5 minutes
@@ -50,25 +51,13 @@ const App = () => {
     }
     
     const tags = Array.from(new Set(
-        data.reduce<string[]>((acc, event) => {
-            if (event?.tags) {
-                try {
-                    const parsedTags = JSON.parse(event.tags);
-                    if (Array.isArray(parsedTags)) {
-                        return acc.concat(parsedTags);
-                    }
-                } catch (error) {
-                    console.error("Error parsing tags:", error);
-                }
-            }
-            return acc;
-        }, [])
+        data.flatMap((event) => safelyParseJson<string>(event.tags))
     )).sort();
     
     return (
         <Container size="md">
             <Stack gap="xl">
-                <EventSummary />
+                <EventSummary events={data} />
                 <Group justify="space-between">
                     <TextInput
                         value={searchQuery}
@@ -94,7 +83,7 @@ const App = () => {
                         </Flex>
                     )}
                 </Group>
-                <EventList searchQuery={searchQuery} tagQuery={tagQuery} />
+                <EventList events={data} searchQuery={searchQuery} tagQuery={tagQuery} refetch={refetch} />
             </Stack>
         </Container>
     );

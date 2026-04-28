@@ -159,7 +159,57 @@ The diagram above illustrates the data flow within the system:
 
 ## Usage
 
-[Include basic usage instructions here]
+Use the interface as the shared source of truth for Google Analytics event documentation.
+
+1. **Review coverage**
+   - The summary cards show the total number of events, how many have descriptions, and how many still need documentation.
+   - Events without descriptions are highlighted in the list so they are easy to triage.
+
+2. **Find events**
+   - Search by event name with the search input.
+   - Select a tag badge to filter the list to that tag. Selecting the same tag again clears the filter.
+
+3. **Document an event**
+   - Expand an event and click **Edit**.
+   - Set the event type, description, expected JSON format, and tags.
+   - Tags are normalized to lowercase before they are saved.
+   - Click **Save** to update the BigQuery documentation table.
+
+4. **Deprecate an event**
+   - Expand the event, click **Edit**, and enable **Mark as deprecated**.
+   - Deprecated events remain visible, but the UI marks them so teams avoid using them for new implementations.
+
+### Local Configuration
+
+Create `Projects/Komplett.Ga.EventDocumentation/local.settings.json` for the Function App and `Projects/Komplett.Ga.EventDocumentation/webapp/.env` for the frontend. Both files are ignored by git.
+
+Frontend environment variables:
+
+```bash
+VITE_API_URL=http://localhost:7071/api/
+VITE_API_TOKEN=
+```
+
+Keep the trailing slash in `VITE_API_URL`; the frontend appends function names such as `getEvents` and `updateEvent`.
+
+### Maintenance Checks
+
+Run these checks before making or merging changes:
+
+```bash
+dotnet test Komplett.Ga.EventDocumentation.sln --no-restore
+
+cd Projects/Komplett.Ga.EventDocumentation/webapp
+npm run lint
+npm run build
+```
+
+Useful dependency audit commands:
+
+```bash
+dotnet list Komplett.Ga.EventDocumentation.sln package --outdated
+npm outdated
+```
 
 ## Contributing
 
