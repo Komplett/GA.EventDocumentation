@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
 import { IconSearch } from "@tabler/icons-react";
-import { Button, Checkbox, CloseButton, Container, Grid, Group, Loader, Stack, Switch, Text, TextInput, UnstyledButton } from "@mantine/core";
+import { CloseButton, Container, Grid, Loader, MultiSelect, Stack, Switch, Text, TextInput } from "@mantine/core";
 import { useQuery } from "@tanstack/react-query";
 
-import classes from "./App.module.css";
-import EventSummary from "./features/summary/EventSummary.tsx";
+import Header from "./features/shell/Header.tsx";
 import EventGrid from "./features/list/EventGrid.tsx";
 import { getEvents } from "./features/list/api/eventRequests.ts";
 import { Event } from "./types/Event.ts";
@@ -13,7 +12,10 @@ import { safelyParseJson } from "./utils/formatter.ts";
 const App = () => {
     const [searchQuery, setSearchQuery] = useState("");
     const [selectedTags, setSelectedTags] = useState<string[]>([]);
+    const [selectedTypes, setSelectedTypes] = useState<string[]>([]);
     const [standardOnly, setStandardOnly] = useState(false);
+    const [hideDeprecated, setHideDeprecated] = useState(false);
+    const [hideUndocumented, setHideUndocumented] = useState(false);
 
     const { data, error, isLoading, refetch } = useQuery<Event[]>({
         queryKey: ["getEvents"],
@@ -26,31 +28,31 @@ const App = () => {
         setSearchQuery(event.target.value);
     };
 
-    const toggleSelectedTag = (tag: string) => {
-        setSelectedTags(prevTags =>
-            prevTags.includes(tag) ? prevTags.filter(t => t !== tag) : [...prevTags, tag]
-        );
-    };
-
     if (isLoading) {
         return (
-            <Container size="xl">
-                <Stack align="center" justify="center" h={300}>
-                    <Loader size="lg" />
-                    <Text>Loading events...</Text>
-                </Stack>
-            </Container>
+            <>
+                <Header />
+                <Container size="xl">
+                    <Stack align="center" justify="center" h={300}>
+                        <Loader size="lg" />
+                        <Text>Loading events...</Text>
+                    </Stack>
+                </Container>
+            </>
         );
     }
 
     if (error || !data) {
         return (
-            <Container size="xl">
-                <Stack align="center" justify="center" h={300}>
-                    <Text c="red" fw={700}>Error loading events</Text>
-                    <Text>{error?.message || 'Missing data'}</Text>
-                </Stack>
-            </Container>
+            <>
+                <Header />
+                <Container size="xl">
+                    <Stack align="center" justify="center" h={300}>
+                        <Text c="red" fw={700}>Error loading events</Text>
+                        <Text>{error?.message || 'Missing data'}</Text>
+                    </Stack>
+                </Container>
+            </>
         );
     }
 
@@ -58,10 +60,14 @@ const App = () => {
         data.flatMap((event) => safelyParseJson<string>(event.tags))
     )).sort();
 
+    const types = Array.from(new Set(
+        data.map((event) => event.type).filter((type) => !!type)
+    )).sort();
+
     return (
-        <Container size="xl">
-            <Stack gap="xl">
-                <EventSummary events={data} />
+        <>
+            <Header events={data} />
+            <Container size="xl">
                 <Grid gutter="xl">
                     <Grid.Col span={{ base: 12, md: 3 }}>
                         <Stack gap="lg">
@@ -83,48 +89,46 @@ const App = () => {
                                 rightSectionPointerEvents={searchQuery ? "auto" : "none"}
                                 aria-label="Search for events"
                             />
-                            <Switch
-                                checked={standardOnly}
-                                onChange={(event) => setStandardOnly(event.currentTarget.checked)}
-                                label="Standard events only"
-                            />
+                            <Stack gap="xs">
+                                <Switch
+                                    checked={standardOnly}
+                                    onChange={(event) => setStandardOnly(event.currentTarget.checked)}
+                                    label="Standard events only"
+                                />
+                                <Switch
+                                    checked={hideDeprecated}
+                                    onChange={(event) => setHideDeprecated(event.currentTarget.checked)}
+                                    label="Hide deprecated"
+                                />
+                                <Switch
+                                    checked={hideUndocumented}
+                                    onChange={(event) => setHideUndocumented(event.currentTarget.checked)}
+                                    label="Hide undocumented"
+                                />
+                            </Stack>
+                            {types.length > 0 && (
+                                <MultiSelect
+                                    label="Type"
+                                    placeholder="Filter by type"
+                                    data={types}
+                                    value={selectedTypes}
+                                    onChange={setSelectedTypes}
+                                    clearable
+                                    searchable
+                                    hidePickedOptions
+                                />
+                            )}
                             {tags.length > 0 && (
-                                <Stack gap={2}>
-                                    <Group justify="space-between" align="center" mb={4}>
-                                        <Text size="sm" fw={600} c="dimmed" tt="uppercase">
-                                            Tags
-                                        </Text>
-                                        <Button
-                                            variant="subtle"
-                                            size="compact-xs"
-                                            disabled={selectedTags.length === 0}
-                                            onClick={() => setSelectedTags([])}
-                                        >
-                                            Clear
-                                        </Button>
-                                    </Group>
-                                    <Stack gap={2}>
-                                        {tags.map((tag) => {
-                                            const isSelected = selectedTags.includes(tag);
-                                            return (
-                                                <UnstyledButton
-                                                    key={tag}
-                                                    onClick={() => toggleSelectedTag(tag)}
-                                                    className={`${classes.tagRow} ${isSelected ? classes.tagRowSelected : ""}`}
-                                                >
-                                                    <Checkbox
-                                                        checked={isSelected}
-                                                        onChange={() => {}}
-                                                        tabIndex={-1}
-                                                        size="sm"
-                                                        style={{ pointerEvents: "none" }}
-                                                    />
-                                                    <Text className={classes.tagLabel}>{tag}</Text>
-                                                </UnstyledButton>
-                                            );
-                                        })}
-                                    </Stack>
-                                </Stack>
+                                <MultiSelect
+                                    label="Tags"
+                                    placeholder="Filter by tag"
+                                    data={tags}
+                                    value={selectedTags}
+                                    onChange={setSelectedTags}
+                                    clearable
+                                    searchable
+                                    hidePickedOptions
+                                />
                             )}
                         </Stack>
                     </Grid.Col>
@@ -133,13 +137,16 @@ const App = () => {
                             events={data}
                             searchQuery={searchQuery}
                             selectedTags={selectedTags}
+                            selectedTypes={selectedTypes}
                             standardOnly={standardOnly}
+                            hideDeprecated={hideDeprecated}
+                            hideUndocumented={hideUndocumented}
                             refetch={refetch}
                         />
                     </Grid.Col>
                 </Grid>
-            </Stack>
-        </Container>
+            </Container>
+        </>
     );
 };
 

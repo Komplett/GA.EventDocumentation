@@ -18,10 +18,10 @@ const EventDetails = ({ item, onEdit }: EventDetailsProps) => {
     const [copyButtonOffset, setCopyButtonOffset] = useState(8);
 
     useEffect(() => {
-        const el = codeRef.current;
-        if (!el) return;
+        const element = codeRef.current;
+        if (!element) return;
 
-        setCopyButtonOffset(8 + (el.offsetWidth - el.clientWidth));
+        setCopyButtonOffset(8 + (element.offsetWidth - element.clientWidth));
     }, [formattedValue]);
 
     return (
