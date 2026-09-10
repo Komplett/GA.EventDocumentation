@@ -1,0 +1,26 @@
+.tagRow {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    padding: 6px 8px;
+    border-radius: var(--mantine-radius-sm);
+    cursor: pointer;
+    transition: background-color 100ms ease;
+}
+
+.tagRow:hover {
+    background-color: light-dark(var(--mantine-color-gray-1), var(--mantine-color-dark-6));
+}
+
+.tagRowSelected,
+.tagRowSelected:hover {
+    background-color: light-dark(var(--mantine-color-blue-0), var(--mantine-color-dark-5));
+}
+
+.tagLabel {
+    font-size: var(--mantine-font-size-xs);
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    text-transform: uppercase;
+    padding-left: var(--mantine-spacing-xs);
+}

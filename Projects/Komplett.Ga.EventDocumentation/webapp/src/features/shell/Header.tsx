@@ -4,7 +4,7 @@ import { Container, Group, Title } from '@mantine/core';
 const Header = () => {
     return (
         <header className={classes.header}>
-            <Container size="md" className={classes.inner}>
+            <Container size="xl" className={classes.inner}>
                 <Title order={4}>GA Event Documentation</Title>
                 <Group gap={5}>
                     <a 

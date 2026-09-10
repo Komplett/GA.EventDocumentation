@@ -1,4 +1,5 @@
 import { Group, Paper, Text, ThemeIcon } from "@mantine/core";
+import classes from "../EventSummary.module.css";
 import { EventStat } from "../../../types/EventStat.ts";
 
 interface SummaryCardProps {
@@ -6,7 +7,7 @@ interface SummaryCardProps {
 }
 
 const SummaryCard = ({ eventStat }: SummaryCardProps) => (
-    <Paper withBorder p="md" radius="md" key={eventStat.title}>
+    <Paper p="md" radius="md" className={classes.card} key={eventStat.title}>
         <Group justify="apart">
             <ThemeIcon
                 color="gray"
