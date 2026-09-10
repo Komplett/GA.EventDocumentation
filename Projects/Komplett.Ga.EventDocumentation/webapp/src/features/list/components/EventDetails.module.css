@@ -1,4 +1,19 @@
+.formatWrapper {
+    position: relative;
+}
+
 .format {
     max-height: 260px;
     overflow-y: auto;
+}
+
+.copyButton {
+    position: absolute;
+    top: 8px;
+    opacity: 0.55;
+    transition: opacity 100ms ease;
+}
+
+.formatWrapper:hover .copyButton {
+    opacity: 1;
 }

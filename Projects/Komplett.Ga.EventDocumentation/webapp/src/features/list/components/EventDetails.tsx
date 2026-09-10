@@ -1,5 +1,6 @@
-import { Alert, Badge, Button, Code, Group, Stack, Text } from "@mantine/core";
-import { IconAlertTriangle, IconEdit } from "@tabler/icons-react";
+import { useEffect, useRef, useState } from "react";
+import { ActionIcon, Alert, Badge, Button, Code, CopyButton, Group, Stack, Text, Tooltip } from "@mantine/core";
+import { IconAlertTriangle, IconCheck, IconCopy, IconEdit } from "@tabler/icons-react";
 
 import classes from "./EventDetails.module.css";
 import { Event } from "../../../types/Event.ts";
@@ -12,6 +13,16 @@ interface EventDetailsProps {
 
 const EventDetails = ({ item, onEdit }: EventDetailsProps) => {
     const tags = safelyParseJson<string>(item.tags).sort();
+    const formattedValue = item.format ? makeJsonNice(item.format) : "";
+    const codeRef = useRef<HTMLElement>(null);
+    const [copyButtonOffset, setCopyButtonOffset] = useState(8);
+
+    useEffect(() => {
+        const el = codeRef.current;
+        if (!el) return;
+
+        setCopyButtonOffset(8 + (el.offsetWidth - el.clientWidth));
+    }, [formattedValue]);
 
     return (
         <Stack gap="md">
@@ -50,7 +61,24 @@ const EventDetails = ({ item, onEdit }: EventDetailsProps) => {
             <div>
                 <Text fw={700} size="sm">Format</Text>
                 {item.format ?
-                    <Code block className={classes.format}>{makeJsonNice(item.format)}</Code> :
+                    <div className={classes.formatWrapper}>
+                        <Code ref={codeRef} block className={classes.format}>{formattedValue}</Code>
+                        <CopyButton value={formattedValue} timeout={1500}>
+                            {({ copied, copy }) => (
+                                <Tooltip label={copied ? "Copied" : "Copy"} withArrow>
+                                    <ActionIcon
+                                        className={classes.copyButton}
+                                        style={{ right: copyButtonOffset }}
+                                        variant="light"
+                                        color={copied ? "teal" : "gray"}
+                                        onClick={copy}
+                                    >
+                                        {copied ? <IconCheck size={16} /> : <IconCopy size={16} />}
+                                    </ActionIcon>
+                                </Tooltip>
+                            )}
+                        </CopyButton>
+                    </div> :
                     <Text c="dimmed" fs="italic">Undocumented</Text>
                 }
             </div>
