@@ -1,0 +1,14 @@
+.card {
+    height: 250px;
+    border: 1px solid light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-4));
+    cursor: pointer;
+    box-shadow: var(--mantine-shadow-xs);
+    transition: border-color 100ms ease, box-shadow 100ms ease, transform 100ms ease;
+}
+
+.card:hover,
+.card:focus-visible {
+    border-color: light-dark(var(--mantine-color-blue-4), var(--mantine-color-blue-6));
+    box-shadow: var(--mantine-shadow-md);
+    transform: translateY(-2px);
+}

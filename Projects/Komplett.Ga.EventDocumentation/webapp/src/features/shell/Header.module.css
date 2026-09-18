@@ -8,8 +8,15 @@
 .inner {
     height: 56px;
     display: flex;
-    justify-content: space-between;
     align-items: center;
+    gap: var(--mantine-spacing-md);
+}
+
+.stats {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    min-width: 0;
 }
 
 .link {

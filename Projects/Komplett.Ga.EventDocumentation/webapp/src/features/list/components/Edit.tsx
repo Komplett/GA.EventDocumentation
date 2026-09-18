@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import {
     Button,
-    JsonInput, 
-    Select, 
-    Stack, 
-    TagsInput, 
-    Text, 
-    TextInput,
+    JsonInput,
+    Select,
+    Stack,
+    TagsInput,
+    Text,
+    Textarea,
     Switch,
     Group
 } from "@mantine/core";
@@ -16,6 +16,7 @@ import { IconDeviceFloppy } from "@tabler/icons-react";
 import { safelyParseJson } from '../../../utils/formatter.ts';
 import { updateEvent } from "../api/eventRequests.ts";
 import { Event } from "../../../types/Event.ts";
+import classes from "./Edit.module.css";
 
 interface EditProps {
     item: Event;
@@ -60,12 +61,12 @@ const Edit = ({ item, eventForm, setEventForm, setIsEditMode, refetch }: EditPro
     return (
         <Stack gap="md">
             <div>
-                <Text fw={700} size="md">Event name</Text>
+                <Text fw={700} size="sm">Event name</Text>
                 <Text>{item.eventName}</Text>
             </div>
 
             <div>
-                <Text fw={700} size="md">Type</Text>
+                <Text fw={700} size="sm">Type</Text>
                 <Select
                     data={['Clientside', 'Serverside']}
                     placeholder="Select event type"
@@ -79,30 +80,34 @@ const Edit = ({ item, eventForm, setEventForm, setIsEditMode, refetch }: EditPro
             </div>
 
             <div>
-                <Text fw={700} size="md">Description</Text>
-                <TextInput
+                <Text fw={700} size="sm">Description</Text>
+                <Textarea
                     radius="md"
                     placeholder="Add a description"
                     value={eventForm.description}
                     onChange={(event) => setEventFormState({description: event.target.value})}
-                />
-            </div>
-
-            <div>
-                <Text fw={700} size="md">Format</Text>
-                <JsonInput
-                    radius="md"
-                    minRows={3}
-                    placeholder="Format"
-                    value={eventForm.format}
-                    onChange={(value) => setEventFormState({format: value})}
-                    formatOnBlur
+                    minRows={2}
                     autosize
                 />
             </div>
 
             <div>
-                <Text fw={700} size="md">Tags</Text>
+                <Text fw={700} size="sm">Format</Text>
+                <JsonInput
+                    radius="sm"
+                    minRows={6}
+                    maxRows={16}
+                    placeholder="Format"
+                    value={eventForm.format}
+                    onChange={(value) => setEventFormState({format: value})}
+                    formatOnBlur
+                    autosize
+                    classNames={{ input: classes.codeInput }}
+                />
+            </div>
+
+            <div>
+                <Text fw={700} size="sm">Tags</Text>
                 <TagsInput
                     placeholder="Enter tag and press Enter"
                     value={safelyParseJson<string>(eventForm.tags)}
